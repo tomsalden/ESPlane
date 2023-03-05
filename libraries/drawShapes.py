@@ -1,0 +1,76 @@
+import math
+from time import sleep
+
+def drawcircle(centreX, centreY, radius, oled):
+
+    for i in range(360):
+        xCoord = int(centreX + radius*math.cos(math.radians(i)))
+        yCoord = int(centreY + radius*math.sin(math.radians(i)))
+        oled.pixel(xCoord,yCoord,1)
+
+    #oled.show()
+
+
+def drawLineAngle(centreX, centreY, radius, angle, oled):
+    endX = centreX + radius*math.cos((-angle+90)/360*2*math.pi)
+    endY = centreY + radius*math.sin((-angle+90)/360*2*math.pi)
+
+    a = (centreY-endY)/(endX-centreX)
+    b = centreY - a*centreX
+
+    for i in range(radius):
+        sign = 1
+        if centreX > endX:
+            sign = -1
+        j = abs(centreX-endX)/radius*i
+        x = centreX + j*sign
+        y = a*x+b
+        oled.pixel(int(x), int(y),1)
+
+    #oled.show()
+
+def clearSquare(beginX, endX, beginY, endY, pixelState, oled):
+    for i in range(endX-beginX):
+        for j in range(endY-beginY):
+            oled.pixel(beginX+i,beginY+j,pixelState)
+    #oled.show()
+
+
+def drawIcon(cornerX, cornerY, icon, oled):
+    yLen = len(icon)
+    xLen = len(icon[0])
+
+    for i in range(xLen):
+        for j in range(yLen):
+            oled.pixel(cornerX+i,cornerY+j,icon[j][i])
+
+    oled.show()
+
+def drawIconRotated(cornerX, cornerY, icon, direction, oled):
+    yLen = len(icon)
+    xLen = len(icon[0])
+
+    if direction == "E":
+        for i in range(xLen):
+            for j in range(yLen):
+                oled.pixel(cornerX+yLen-j,cornerY+i,icon[j][i])
+
+    if direction == "S":
+        for i in range(xLen):
+            for j in range(yLen):
+                oled.pixel(cornerX+i,cornerY+yLen-j,icon[j][i])
+
+    if direction == "W":
+        for i in range(xLen):
+            for j in range(yLen):
+                oled.pixel(cornerX+j,cornerY+i,icon[j][i])
+
+    #oled.show()
+
+def movingIcon_Y(cornerX, startcornerY, endcornerY, icon, speed, oled):
+    yLen = len(icon)
+    xLen = len(icon[0])
+
+    for a in range(startcornerY-endcornerY):
+        drawIcon(cornerX,startcornerY-(a+1),icon,oled)
+        sleep(speed)
