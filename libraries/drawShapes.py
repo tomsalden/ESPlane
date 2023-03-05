@@ -1,5 +1,7 @@
 import math
+import Libraries.ssd1306 as ssd1306
 from time import sleep
+import OLEDController.planeIcon as planeIcon
 
 def drawcircle(centreX, centreY, radius, oled):
 
@@ -44,7 +46,7 @@ def drawIcon(cornerX, cornerY, icon, oled):
         for j in range(yLen):
             oled.pixel(cornerX+i,cornerY+j,icon[j][i])
 
-    oled.show()
+    #oled.show()
 
 def drawIconRotated(cornerX, cornerY, icon, direction, oled):
     yLen = len(icon)
@@ -74,3 +76,58 @@ def movingIcon_Y(cornerX, startcornerY, endcornerY, icon, speed, oled):
     for a in range(startcornerY-endcornerY):
         drawIcon(cornerX,startcornerY-(a+1),icon,oled)
         sleep(speed)
+
+
+def drawAirplane(heading, oled):
+    if heading < 23:
+        #North
+        drawIcon(102,-1,planeIcon.planeIcon_16x16,oled)
+        return
+    if heading < 45:
+        #NorthEast
+        drawIcon(102,-1,planeIcon.planeIcon_16x16_r,oled)
+        return
+    if heading < 68:
+        #EastNorth
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16_l,"E",oled)
+        return
+    if heading < 113:
+        #East
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"E",oled)
+        return
+    if heading < 135:
+        #EastSouth
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16_r,"E",oled)
+        return
+    if heading < 158:
+        #SouthEast
+        drawIconRotated(102,-2,planeIcon.planeIcon_16x16_r,"S",oled) 
+        return
+    if heading < 203:
+        #South
+        drawIconRotated(102,-2,planeIcon.planeIcon_16x16,"S",oled) 
+        return
+    if heading < 225:
+        #SouthWest
+        drawIconRotated(102,-2,planeIcon.planeIcon_16x16_l,"S",oled) 
+        return
+    if heading < 248:
+        #WestSouth
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16_r,"W",oled)
+        return
+    if heading < 293:
+        #West
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"W",oled)
+        return
+    if heading < 315:
+        #WestNorth
+        drawIconRotated(102,-1,planeIcon.planeIcon_16x16_l,"W",oled)
+        return
+    if heading < 338:
+        #NorthWest
+        drawIcon(102,-1,planeIcon.planeIcon_16x16_l,oled)
+        return
+    if heading > 337:
+        #North
+        drawIcon(102,-1,planeIcon.planeIcon_16x16,oled)
+        return

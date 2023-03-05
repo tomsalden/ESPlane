@@ -14,10 +14,13 @@ memoryErrorSignal = False
 Latitude = 0
 Longitude = 0
 
+previousUpdateTime = 0
+
 def updatePlanes():
     divideArea()
-    while settings.main_updateTime + settings.main_timeout > time.time():
-        settings.thread_Plane_updateTime = time.time()
+
+    while settings.main_updateTime + settings.main_timeout > time.time():       #Check if main did not timeout, otherwise stop the loop
+        updateThreadTime()                                                      #Update the time this thread last ran
         gc.collect()
         print("Thread ID: ", _thread.get_ident())
         print("Memory left: ", gc.mem_free())
@@ -33,6 +36,16 @@ def updatePlanes():
         settings.planesReady = True
         print(settings.planes.name)
     print("Planefinder has been shut down")
+
+def updateThreadTime():
+    #Update the time the thread ran previously. If this is different than what was saved before, another thread probably is running. In that case, close this thread
+    #Check previous time, if it is different that before, send stopsignal
+    if previousUpdateTime != settings.thread_Plane_updateTime:
+        settings.thread_Plane_stopsignal = True
+
+    #Update the updatetime and save it to compare for the next time
+    previousUpdateTime = time.time()
+    settings.thread_Plane_updateTime = previousUpdateTime
 
 def divideArea():
     global Latitude
@@ -75,11 +88,15 @@ def planeTracking(myLat,myLon,importantAirplanes):
 
     for i in range(settings.areaDivisions):
         for j in range(settings.areaDivisions):
-            settings.thread_Plane_updateTime = time.time()
+            updateThreadTime()
+
+            #Check if there is a stopsignal
             if settings.thread_Plane_stopsignal:
                 print("Stopping plane manager")
                 settings.thread_Plane_stopped = True
                 _thread.exit()
+
+            #Check if main timed out
             if settings.main_updateTime + settings.main_timeout < time.time():
                 print("Stopping plane manager")
                 settings.thread_Plane_stopped = True

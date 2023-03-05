@@ -32,6 +32,16 @@ def initOLED():
         print("No connection to the OLED display. Following error occured:")
         print(e)
         settings.oledConnected = False
+
+def networkConnected():
+    oled.fill(0)
+    oled.text('ESPAim', 0, 0)
+    oled.text('Connected!', 0, 20)
+    oled.text('Searching!', 0, 40)  
+    oled.show()
+
+    drawShapes.movingIcon_Y(102,64,-1,planeIcon.planeIcon_16x16,0.01,oled)
+
         
 def updateOLED():
     noPlanesFound = 0
@@ -87,20 +97,32 @@ def updateOLED():
         drawShapes.drawcircle(118,50,10,oled)
         drawShapes.drawLineAngle(118,50,13,settings.geomatics.dirAngle,oled)
 
-        if settings.currentPlane.heading < 45 or settings.currentPlane.heading > 314:
-            #Heading is to the north
-            drawShapes.drawIcon(102,-1,planeIcon.planeIcon_16x16,oled)
-        if settings.currentPlane.heading > 44 and settings.currentPlane.heading < 135:
-            #Heading is to the east
-            drawShapes.drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"E",oled)
-        if settings.currentPlane.heading > 134 and settings.currentPlane.heading < 225:
-            #Heading is to the south
-            drawShapes.drawIconRotated(102,-2,planeIcon.planeIcon_16x16,"S",oled) 
-        if settings.currentPlane.heading > 224 and settings.currentPlane.heading < 315:
-            #Heading is to the east
-            drawShapes.drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"W",oled)
+        drawShapes.drawAirplane(settings.currentPlane.heading,oled)
 
-        oled.show()
+        # if settings.currentPlane.heading < 45 or settings.currentPlane.heading > 314:
+        #     #Heading is to the north
+        #     drawShapes.drawIcon(102,-1,planeIcon.planeIcon_16x16,oled)
+        # if settings.currentPlane.heading > 44 and settings.currentPlane.heading < 135:
+        #     #Heading is to the east
+        #     drawShapes.drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"E",oled)
+        # if settings.currentPlane.heading > 134 and settings.currentPlane.heading < 225:
+        #     #Heading is to the south
+        #     drawShapes.drawIconRotated(102,-2,planeIcon.planeIcon_16x16,"S",oled) 
+        # if settings.currentPlane.heading > 224 and settings.currentPlane.heading < 315:
+        #     #Heading is to the east
+        #     drawShapes.drawIconRotated(102,-1,planeIcon.planeIcon_16x16,"W",oled)
+
+        #Check if there is more than one plane
+        amountPlanes = len(settings.planes.name)
+        if amountPlanes > 1 and amountPlanes < 10:
+            #drawShapes.clearSquare(80,82,7,9,1,oled)
+            oled.text(str(len(settings.planes.name)),85,5)
+
+        if amountPlanes > 9:
+            #drawShapes.clearSquare(80,82,7,9,1,oled)
+            oled.text(str(len(settings.planes.name)),80,5)
+
+            oled.show()
     
     oled.poweroff()
     print("OLED manager has been shut down")

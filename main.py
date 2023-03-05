@@ -27,6 +27,7 @@ OLEDControl.initOLED()
 print("Connecting to network")
 networkManager.initialiseNetwork()
 networkManager.connectNetwork()
+OLEDControl.networkConnected()
 
 #Set correct time
 correctTime = False
@@ -77,7 +78,6 @@ while True:
         settings.thread_Servo_updateTime = time.time()
         _thread.start_new_thread(servoControl.updateServos,())
 
-    continue
     #Restart main loop if no OLED screen is connected
     if not settings.oledConnected:
         continue
