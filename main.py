@@ -57,6 +57,7 @@ while True:
         settings.thread_Plane_stopsignal = True
         
         if settings.thread_Plane_stopped:
+            gc.collect()
             print("Start plane manager")
             settings.thread_Plane_stopsignal = False
             settings.thread_Plane_updateTime = time.time()
