@@ -28,7 +28,7 @@ def updatePlanes():
         tempPlanes = planeTracking(settings.myLat,settings.myLon,settings.importantAirplanes)
         while memoryErrorSignal:
             print("Trying again! Thread: ", _thread.get_ident())
-            settings.thread_Plane_updateTime = time.time()
+            updateThreadTime()
             tempPlanes = planeTracking(settings.myLat,settings.myLon,settings.importantAirplanes)
 
         settings.planesReady = False
@@ -40,6 +40,10 @@ def updatePlanes():
 def updateThreadTime():
     #Update the time the thread ran previously. If this is different than what was saved before, another thread probably is running. In that case, close this thread
     #Check previous time, if it is different that before, send stopsignal
+    global previousUpdateTime
+    if previousUpdateTime == 0:
+        previousUpdateTime = settings.thread_Plane_updateTime
+
     if previousUpdateTime != settings.thread_Plane_updateTime:
         settings.thread_Plane_stopsignal = True
 
@@ -140,6 +144,9 @@ def planeTracking(myLat,myLon,importantAirplanes):
             response.close()
             print("Response from area: " + str(i) + ", " + str(j))
 
+            if settings.areaDivisions > 1:
+                memoryCounter = memoryCounter +1
+
             for attribute, value in parsed.items():
                 if attribute != 'version' and attribute != 'full_count':
                     if any(x in str(value[16]) for x in importantAirplanes):
@@ -161,13 +168,10 @@ def planeTracking(myLat,myLon,importantAirplanes):
             memoryCounter = 0
 
     #Reset the area division to see if it is less busy
-    if memoryCounter > 20:
+    if memoryCounter > 30:
         memoryCounter = 1
         settings.areaDivisions = settings.areaDivisions - 1
         divideArea()
-
-    if settings.areaDivisions > 1:
-        memoryCounter = memoryCounter +1
 
     planes = classes.selectedPlanes(selectedPlaneName,selectedPlaneLat,selectedPlaneLon,selectedPlaneDistance,selectedPlaneAltitude,selectedPlaneSpeed,selectedPlaneHeading,selectedPlaneType,selectedPlaneRegistration,selectedPlaneTimestamp)
     return planes

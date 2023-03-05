@@ -13,10 +13,10 @@ IndicatorLED = 2
 #############   Variables       #############
 ## Coordinates
 # Search area settings
-areaMaxLat = 55.5007
-areaMinLat = 50.0000
-areaMaxLon = 7.6836
-areaMinLon = 0.6271
+areaMaxLat = 54.2
+areaMinLat = 50
+areaMaxLon = 10
+areaMinLon = 1.5
 
 # Current coordinates
 myLat = 52.1918766
@@ -34,7 +34,8 @@ importantAirplanes = ["RCH","LAGR","RRR","NCHO",
                       "ASCOT","HOBO","BART","BLKCAT",
                       "OMEN","BLUE","BGA","ZXP",
                       "DGLBA","LIFE","ZXP","BAF",
-                      "CHAOS","MOOSE","WOLF","RYR7BH"]
+                      "CHAOS","MOOSE","WOLF","SNAKE","CEF"
+                      ]
 
 #Servo maximum values
 # minDirValue = 18

@@ -26,5 +26,25 @@ def connectNetwork():
         except OSError as e:
             time.sleep(1)
 
+def connectToNetwork():
+    station.disconnect()
+    while not station.isconnected():
+        for ssid, psk in WifiCredentials.networkDetails:
+            try:
+                station.connect(ssid,psk)
+            except OSError as e:
+                time.sleep(0.5)
+                
+            #Wait for the connection to succeed or fail
+            for _ in range(20):
+                if station.isconnected():
+                    print("Connected to: ", ssid)
+                    break
+                else:
+                    time.sleep(0.5)
+
+            if station.isconnected():
+                break
+
 def checkConnection():
     return station.isconnected()

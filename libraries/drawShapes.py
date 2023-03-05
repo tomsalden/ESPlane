@@ -1,7 +1,7 @@
 import math
-import Libraries.ssd1306 as ssd1306
+import libraries.ssd1306 as ssd1306
 from time import sleep
-import OLEDController.planeIcon as planeIcon
+import libraries.planeIcon as planeIcon
 
 def drawcircle(centreX, centreY, radius, oled):
 
@@ -75,6 +75,7 @@ def movingIcon_Y(cornerX, startcornerY, endcornerY, icon, speed, oled):
 
     for a in range(startcornerY-endcornerY):
         drawIcon(cornerX,startcornerY-(a+1),icon,oled)
+        oled.show()
         sleep(speed)
 
 

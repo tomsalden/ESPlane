@@ -26,7 +26,7 @@ OLEDControl.initOLED()
 #Connect to network
 print("Connecting to network")
 networkManager.initialiseNetwork()
-networkManager.connectNetwork()
+networkManager.connectToNetwork()
 OLEDControl.networkConnected()
 
 #Set correct time

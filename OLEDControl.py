@@ -1,6 +1,7 @@
 #############   Control the OLED   #############
 import machine
 import time
+import math
 import libraries.ssd1306 as ssd1306
 import libraries.drawShapes as drawShapes
 import libraries.planeIcon as planeIcon
@@ -122,7 +123,7 @@ def updateOLED():
             #drawShapes.clearSquare(80,82,7,9,1,oled)
             oled.text(str(len(settings.planes.name)),80,5)
 
-            oled.show()
+        oled.show()
     
     oled.poweroff()
     print("OLED manager has been shut down")
