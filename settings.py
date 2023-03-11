@@ -34,8 +34,8 @@ importantAirplanes = ["RCH","LAGR","RRR","NCHO",
                       "ASCOT","HOBO","BART","BLKCAT",
                       "OMEN","BLUE","BGA","ZXP",
                       "DGLBA","LIFE","ZXP","BAF",
-                      "CHAOS","MOOSE","WOLF","SNAKE","CEF"
-                      ]
+                      "CHAOS","MOOSE","WOLF","SNAKE",
+                      "CEF","A124"]
 
 #Servo maximum values
 # minDirValue = 18
@@ -55,6 +55,8 @@ minAltValue = 1922
 maxAltValue = 8969
 
 led = machine.Pin(IndicatorLED, machine.Pin.OUT)
+
+servoEnabled = False
 
 
 #############   Program variables       #############

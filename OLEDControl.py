@@ -8,6 +8,8 @@ import libraries.planeIcon as planeIcon
 
 import settings
 
+noPlanesFound = 0
+
 #Initialise OLED
 def initOLED():
     global oled
@@ -43,9 +45,20 @@ def networkConnected():
 
     drawShapes.movingIcon_Y(102,64,-1,planeIcon.planeIcon_16x16,0.01,oled)
 
+def noPlanesOLED():
+    global noPlanesFound
+    noPlanesFound = noPlanesFound + 1
+    if noPlanesFound > 5:
+        oled.poweroff()
+    oled.fill(0)
+    oled.text('No planes', 0, 0)
+    oled.text('found!!', 0, 20)
+    oled.text('Retrying...', 0, 40)
+    oled.show()
+
         
 def updateOLED():
-    noPlanesFound = 0
+    global noPlanesFound
     while settings.main_updateTime + settings.main_timeout > time.time():
         settings.thread_OLED_updateTime = time.time()
         time.sleep(1)
@@ -61,15 +74,7 @@ def updateOLED():
         #Check if there are any planes at all
         if not settings.planes.name:
             print("No planes found")
-            noPlanesFound = noPlanesFound + 1
-            if noPlanesFound > 5:
-                oled.poweroff()
-            oled.fill(0)
-            oled.text('No planes', 0, 0)
-            oled.text('found!!', 0, 20)
-            oled.text('Retrying...', 0, 40)
-            oled.show()
-
+            noPlanesOLED()
             drawShapes.movingIcon_Y(102,64,-20,planeIcon.planeIcon_16x16,0.005,oled)
             continue
 
