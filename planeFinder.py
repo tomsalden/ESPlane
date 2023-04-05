@@ -20,6 +20,9 @@ def updatePlanes():
     divideArea()
 
     while settings.main_updateTime + settings.main_timeout > time.time():       #Check if main did not timeout, otherwise stop the loop
+        if settings.thread_Plane_forceStop == True:
+            break
+
         updateThreadTime()                                                      #Update the time this thread last ran
         gc.collect()
         print("Thread ID: ", _thread.get_ident())
@@ -35,7 +38,10 @@ def updatePlanes():
         settings.planes = tempPlanes
         settings.planesReady = True
         print(settings.planes.name)
-    print("Planefinder has been shut down")
+        time.sleep(1)
+    settings.thread_Plane_forceStop = False
+    settings.thread_Plane_stopped = True
+    print("Planefinder has been shut down (forcefully)")
 
 def updateThreadTime():
     #Update the time the thread ran previously. If this is different than what was saved before, another thread probably is running. In that case, close this thread
@@ -45,6 +51,7 @@ def updateThreadTime():
         previousUpdateTime = settings.thread_Plane_updateTime
 
     if previousUpdateTime != settings.thread_Plane_updateTime:
+        print("Update time is wrong!")
         settings.thread_Plane_stopsignal = True
 
     #Update the updatetime and save it to compare for the next time
@@ -98,12 +105,14 @@ def planeTracking(myLat,myLon,importantAirplanes):
             if settings.thread_Plane_stopsignal:
                 print("Stopping plane manager")
                 settings.thread_Plane_stopped = True
+                settings.thread_Plane_forceStop = True
                 _thread.exit()
 
             #Check if main timed out
             if settings.main_updateTime + settings.main_timeout < time.time():
                 print("Stopping plane manager")
                 settings.thread_Plane_stopped = True
+                settings.thread_Plane_forceStop = True
                 _thread.exit()
                 
             response = []
@@ -118,7 +127,10 @@ def planeTracking(myLat,myLon,importantAirplanes):
                 print("Error detected: ", e)
                 if e.errno == -202 or e.errno == 113 or e.errno == 104:
                     print("Error 202, resetting connection")
-                    networkManager.connectNetwork()
+                    print("Stopping planefinding thread!")
+                    settings.networkConnection = False
+                    settings.thread_Plane_stopsignal = True
+                    settings.thread_Plane_forceStop = True
                 if e.errno != errno.ECONNRESET:
                     raise # Not error we are looking for
                 pass # Handle error here.

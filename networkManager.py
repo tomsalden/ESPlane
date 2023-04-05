@@ -25,6 +25,8 @@ def connectNetwork():
             station.connect(WifiCredentials.wifi_ssid2, WifiCredentials.wifi_password2)
         except OSError as e:
             time.sleep(1)
+    print("Network connected")
+    settings.networkConnection = True
 
 def connectToNetwork():
     station.disconnect()
@@ -39,6 +41,7 @@ def connectToNetwork():
             for _ in range(20):
                 if station.isconnected():
                     print("Connected to: ", ssid)
+                    settings.networkConnection = True
                     break
                 else:
                     time.sleep(0.5)

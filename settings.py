@@ -54,9 +54,9 @@ maxDirValue = 7687
 minAltValue = 1922
 maxAltValue = 8969
 
-led = machine.Pin(IndicatorLED, machine.Pin.OUT)
-
 servoEnabled = False
+
+led = machine.Pin(IndicatorLED, machine.Pin.OUT)
 
 
 #############   Program variables       #############
@@ -76,6 +76,7 @@ thread_location_timeout = 10
 
 thread_Plane_stopsignal = True
 thread_Plane_stopped = True
+thread_Plane_forceStop = False
 
 planes = classes.selectedPlanes(0,0,0,0,0,0,0,0,0,0)
 planesReady = False
@@ -84,3 +85,5 @@ selectedPlane = 0
 
 geomatics = classes.updatedGeomatis(0,0,0)
 geomaticsReady = False
+
+networkConnection = False

@@ -67,15 +67,15 @@ def updateOLED():
         if not settings.planesReady:
             continue
 
-        #Check if movement information can be accessed
-        if not settings.geomaticsReady:
-            continue
-
         #Check if there are any planes at all
         if not settings.planes.name:
             print("No planes found")
             noPlanesOLED()
             drawShapes.movingIcon_Y(102,64,-20,planeIcon.planeIcon_16x16,0.005,oled)
+            continue
+
+        #Check if movement information can be accessed
+        if not settings.geomaticsReady:
             continue
 
         #Show the information if there are any planes

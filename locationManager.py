@@ -12,6 +12,8 @@ def updateLocation():
         #Check if plane information can be accessed
         if not settings.planesReady:
             continue
+        if not settings.planes:
+            continue
         #Check if there are any planes at all
         if not settings.planes.name:
             # print("No airplanes available, no coordinates")
