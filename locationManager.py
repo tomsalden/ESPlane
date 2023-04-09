@@ -1,11 +1,15 @@
 import time
 import math
+import machine
 
 import settings
 import classes
 
+from buzzer_music import music
+
 def updateLocation():
     printLimiter = 0
+
     while settings.main_updateTime + settings.main_timeout > time.time():
         settings.thread_location_updateTime = time.time()
         time.sleep(1)
@@ -31,6 +35,10 @@ def updateLocation():
         selectedPlane = classes.selectedPlanes(settings.planes.name[selectedIndex],settings.planes.lat[selectedIndex],settings.planes.lon[selectedIndex],settings.planes.distance[selectedIndex],settings.planes.altitude[selectedIndex],settings.planes.speed[selectedIndex],settings.planes.heading[selectedIndex],settings.planes.type[selectedIndex],settings.planes.registration[selectedIndex],settings.planes.timestamp[selectedIndex])
         settings.currentPlane = selectedPlane
 
+        if settings.currentPlane.name != settings.selectedPlaneName:
+            settings.notified = False
+        settings.selectedPlaneName = selectedPlane.name
+
         #find out how new the data is, interpolate the distance travelled and get up-to-date coordinates
         timeTravelled = time.time() - (selectedPlane.timestamp - 946684800) #Compensate for partial epoch
         planeSpeed_meter_second = selectedPlane.speed / 1.944
@@ -47,9 +55,18 @@ def updateLocation():
         settings.geomatics = classes.updatedGeomatis(newDistance,newAltAngle,newDirection)
         settings.geomaticsReady = True
 
+        if newAltAngle > settings.notificationAltitude and not settings.notified:
+            print("Airplane close, buzzing!!")
+            notificationSong = music(settings.notificationSound, pins=[machine.Pin(4)], looping=False)
+            while notificationSong.stopped == False:
+                notificationSong.tick()
+                time.sleep(0.04)
+            settings.notified = True
+
         printLimiter = printLimiter + 1
         if printLimiter > 10:
             print("Selected plane:", selectedPlane.name, "Distance:", newDistance/1000)
+            print("Altitude angle of selected plane:", newAltAngle, "Already notified:",settings.notified)
             printLimiter = 0
     
     print("Location manager has been shut down")

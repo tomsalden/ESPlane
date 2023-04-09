@@ -35,7 +35,11 @@ importantAirplanes = ["RCH","LAGR","RRR","NCHO",
                       "OMEN","BLUE","BGA","ZXP",
                       "DGLBA","LIFE","ZXP","BAF",
                       "CHAOS","MOOSE","WOLF","SNAKE",
-                      "CEF","A124"]
+                      "CEF","NOBLE","ROGUE","SVF"]
+
+importantAiplaneModels = ["C17","R135","A400","C30J",
+                          "A124","EUFI","C130","H47",
+                          "F35","K35R","HAWK","P8"]
 
 #Servo maximum values
 # minDirValue = 18
@@ -58,6 +62,10 @@ servoEnabled = False
 
 led = machine.Pin(IndicatorLED, machine.Pin.OUT)
 
+notificationAltitude = 10
+#startupSound = '1 G7 0.5 43;0 C7 0.5 43'
+startupSound = '0 D#6 1 14;2.999999999999999 D6 1 14;3.999999999999999 C#6 1 14;5.999999999999999 F#5 1 14;6.999999999999999 D#5 1 14;7.999999999999999 C#5 1 14;9 C5 1 14;10 C5 1 14'
+notificationSound = '1 G7 0.5 43;0 C7 0.5 43'
 
 #############   Program variables       #############
 oledConnected = False
@@ -82,6 +90,8 @@ planes = classes.selectedPlanes(0,0,0,0,0,0,0,0,0,0)
 planesReady = False
 currentPlane = classes.selectedPlanes(0,0,0,0,0,0,0,0,0,0)
 selectedPlane = 0
+selectedPlaneName = ""
+notified = False        #Check if a notification has been made for the current airplane
 
 geomatics = classes.updatedGeomatis(0,0,0)
 geomaticsReady = False

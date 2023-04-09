@@ -24,7 +24,7 @@ def updatePlanes():
             break
 
         updateThreadTime()                                                      #Update the time this thread last ran
-        gc.collect()
+        #gc.collect()
         print("Thread ID: ", _thread.get_ident())
         print("Memory left: ", gc.mem_free())
         settings.led.value(not settings.led.value())
@@ -52,6 +52,7 @@ def updateThreadTime():
 
     if previousUpdateTime != settings.thread_Plane_updateTime:
         print("Update time is wrong!")
+        print("Previous update time:", previousUpdateTime, "Current update time:", settings.thread_Plane_updateTime)
         settings.thread_Plane_stopsignal = True
 
     #Update the updatetime and save it to compare for the next time
@@ -99,7 +100,10 @@ def planeTracking(myLat,myLon,importantAirplanes):
 
     for i in range(settings.areaDivisions):
         for j in range(settings.areaDivisions):
+            if memoryErrorSignal:
+                continue
             updateThreadTime()
+            # gc.collect()
 
             #Check if there is a stopsignal
             if settings.thread_Plane_stopsignal:
@@ -118,6 +122,7 @@ def planeTracking(myLat,myLon,importantAirplanes):
             response = []
             Bounds = str(Latitude[i+1]) + "," + str(Latitude[i]) + "," + str(Longitude[j]) + "," + str(Longitude[j+1])
             URL =  "http://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=" + Bounds + "&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=0&air=1&vehicles=0&estimated=1&maxage=14400&gliders=0&stats=0"  
+            #URL met bounds: https://data-live.flightradar24.com/zones/fcgi/feed.js?bounds=54,50,1.5,10&faa=1&satellite=1&mlat=1&flarm=1&adsb=1&gnd=0&air=1&vehicles=0&estimated=1&maxage=14400&gliders=0&stats=0
             headers = {'Content-Type': 'application/json', 'Connection': 'Close'}
             try:
                 response = urequests.get(url = URL, headers = headers)
@@ -158,10 +163,18 @@ def planeTracking(myLat,myLon,importantAirplanes):
 
             if settings.areaDivisions > 1:
                 memoryCounter = memoryCounter +1
+            
+            foundModel = False
 
             for attribute, value in parsed.items():
                 if attribute != 'version' and attribute != 'full_count':
-                    if any(x in str(value[16]) for x in importantAirplanes):
+
+                    foundModel = False
+                    for a in range(0,len(settings.importantAiplaneModels)):
+                        if str(value[8]) == settings.importantAiplaneModels[a]:
+                            foundModel = True
+
+                    if any(x in str(value[16]) for x in importantAirplanes) or foundModel:
                         selectedPlaneName.append(str(value[16]))
                         selectedPlaneLat.append(value[1])
                         selectedPlaneLon.append(value[2])
