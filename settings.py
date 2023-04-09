@@ -39,7 +39,8 @@ importantAirplanes = ["RCH","LAGR","RRR","NCHO",
 
 importantAiplaneModels = ["C17","R135","A400","C30J",
                           "A124","EUFI","C130","H47",
-                          "F35","K35R","HAWK","P8"]
+                          "F35","K35R","HAWK","P8",
+                          "C5M"]
 
 #Servo maximum values
 # minDirValue = 18
