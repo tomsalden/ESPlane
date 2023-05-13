@@ -37,6 +37,8 @@ def initOLED():
         settings.oledConnected = False
 
 def networkConnected():
+    if settings.oledConnected == False:
+        return
     oled.fill(0)
     oled.text('ESPAim', 0, 0)
     oled.text('Connected!', 0, 20)
@@ -46,6 +48,8 @@ def networkConnected():
     drawShapes.movingIcon_Y(102,64,-1,planeIcon.planeIcon_16x16,0.01,oled)
 
 def noPlanesOLED():
+    if settings.oledConnected == False:
+        return
     global noPlanesFound
     noPlanesFound = noPlanesFound + 1
     if noPlanesFound > 5:

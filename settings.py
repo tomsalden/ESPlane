@@ -77,7 +77,7 @@ thread_Servo_updateTime = 0
 thread_Plane_updateTime = 0
 thread_location_updateTime = 0
 
-main_timeout = 5
+main_timeout = 15
 thread_OLED_timeout = 10
 thread_Servo_timeout = 10
 thread_Plane_timeout = 30
@@ -93,6 +93,7 @@ currentPlane = classes.selectedPlanes(0,0,0,0,0,0,0,0,0,0)
 selectedPlane = 0
 selectedPlaneName = ""
 notified = False        #Check if a notification has been made for the current airplane
+airplanesUpdated = False
 
 geomatics = classes.updatedGeomatis(0,0,0)
 geomaticsReady = False

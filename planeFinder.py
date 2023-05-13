@@ -3,6 +3,7 @@ import _thread
 import gc
 import urequests
 import ujson
+import libraries.mrequests as requests
 
 import settings
 import classes
@@ -75,6 +76,28 @@ def divideArea():
     for i in range(settings.areaDivisions-1):
         Latitude.insert(i+1,Latitude[i] + latDividedChunk)
         Longitude.insert(i+1,Longitude[i] + lonDividedChunk)
+
+def updateAirplaneList():
+    settings.main_updateTime = time.time()
+    r = requests.get(url = "https://script.google.com/macros/s/AKfycbwT_kFyRYeN3EcitCtlBrp9hVlm4KT7cbQyqdUuBKc5EEgp2tlNQsFB1O_yTWD35RStmw/exec?read=models")
+    splittedModels = r.text.split(",")
+    r.close()
+    if splittedModels[0] == "CorrectCheck" and splittedModels[-1] == "CorrectCheck2":
+        print("Updated airplane models")
+        splittedModels.pop(0)
+        splittedModels.pop(-1)
+        settings.importantAiplaneModels = splittedModels
+
+    settings.main_updateTime = time.time()
+    r = requests.get(url = "https://script.google.com/macros/s/AKfycbwT_kFyRYeN3EcitCtlBrp9hVlm4KT7cbQyqdUuBKc5EEgp2tlNQsFB1O_yTWD35RStmw/exec?read=callsigns")
+    splittedModels = r.text.split(",")
+    r.close()
+    if splittedModels[0] == "CorrectCheck" and splittedModels[-1] == "CorrectCheck2":
+        print("Updated airplane callsigns")
+        splittedModels.pop(0)
+        splittedModels.pop(-1)
+        settings.importantAirplanes = splittedModels
+
 
 def planeTracking(myLat,myLon,importantAirplanes):
     global memoryErrorSignal
